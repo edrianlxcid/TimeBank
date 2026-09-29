@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/categories"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Idiomas",
+      "description": "Clases de inglés, francés y otros"
+    }
+order: 3000

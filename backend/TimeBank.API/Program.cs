@@ -1,9 +1,21 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using TimeBank.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Controladores de la API (CRUD)
+builder.Services.AddControllers(options =>
+    {
+        // Evita que las propiedades de navegación (User, Service...) se pidan como obligatorias
+        options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+    })
+    .AddJsonOptions(options =>
+    {
+        // Evita el error de "ciclo" al devolver objetos relacionados (servicio -> usuario -> servicios...)
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -18,12 +30,12 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+else
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
-
-// Prueba de conexión: devuelve las categorías guardadas en la base de datos
-app.MapGet("/api/categories", async (TimeBankDbContext db) =>
-    await db.Categories.ToListAsync())
-.WithName("GetCategories");
+// Activa las rutas de los controladores: /api/categories, /api/users, /api/services...
+app.MapControllers();
 
 app.Run();

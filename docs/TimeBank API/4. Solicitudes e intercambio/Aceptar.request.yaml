@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/servicerequests/1/status"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "status": "Aceptada"
+    }
+order: 8000

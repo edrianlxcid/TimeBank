@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}/timetransactions"
+method: GET
+order: 10000

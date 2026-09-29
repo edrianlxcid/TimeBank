@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/services"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "userId": 2,
+      "categoryId": 2,
+      "title": "Reparación de computadoras",
+      "description": "Formateo e instalación",
+      "estimatedHours": 1.5
+    }
+order: 5000

@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}/servicerequests/1"
+method: DELETE
+order: 11000

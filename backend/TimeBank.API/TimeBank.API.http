@@ -1,6 +1,38 @@
-@TimeBank.API_HostAddress = http://localhost:5070
+# Pruebas rápidas de la API TimeBank (se ejecutan desde VS Code con la extensión REST Client)
+@api = http://localhost:5070/api
 
-GET {{TimeBank.API_HostAddress}}/weatherforecast/
-Accept: application/json
+### Listar categorías
+GET {{api}}/categories
 
-###
+### Crear usuario (recibe 2 horas de bienvenida)
+POST {{api}}/users
+Content-Type: application/json
+
+{ "firstName": "Ana", "lastName": "Pérez", "email": "ana@mail.com", "password": "123456" }
+
+### Crear servicio
+POST {{api}}/services
+Content-Type: application/json
+
+{ "userId": 1, "categoryId": 1, "title": "Clases de inglés", "description": "Nivel básico", "estimatedHours": 2 }
+
+### Buscar servicios por categoría y texto
+GET {{api}}/services?categoryId=1&search=ingles
+
+### Solicitar un servicio
+POST {{api}}/servicerequests
+Content-Type: application/json
+
+{ "serviceId": 1, "requesterId": 2, "requestedHours": 2, "message": "Quiero aprender" }
+
+### Aceptar la solicitud
+PUT {{api}}/servicerequests/1/status
+Content-Type: application/json
+
+{ "status": "Aceptada" }
+
+### Completar la solicitud (transfiere las horas)
+PUT {{api}}/servicerequests/1/status
+Content-Type: application/json
+
+{ "status": "Completada" }

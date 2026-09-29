@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/servicerequests/1"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "serviceId": 1,
+      "requesterId": 2,
+      "requestedHours": 1.5,
+      "message": "Mejor 1 hora y media"
+    }
+order: 6000

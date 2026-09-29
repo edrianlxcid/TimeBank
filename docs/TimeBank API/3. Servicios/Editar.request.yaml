@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/services/1"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "userId": 1,
+      "categoryId": 1,
+      "title": "Clases de inglés intermedio",
+      "description": "Conversación",
+      "estimatedHours": 2,
+      "isActive": true
+    }
+order: 6000

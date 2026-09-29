@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: fee546f6-61ab-4fec-840d-ba2789b938f8
+
+localResources:
+  collections:
+    - ../docs/TimeBank API

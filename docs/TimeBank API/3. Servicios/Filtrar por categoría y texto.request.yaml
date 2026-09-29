@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/services?categoryId=1&search=ingles"
+method: GET
+queryParams:
+  categoryId: "1"
+  search: ingles
+order: 2000

@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/users?search=ana"
+method: GET
+queryParams:
+  search: ana
+order: 2000

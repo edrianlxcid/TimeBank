@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/servicerequests"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "serviceId": 1,
+      "requesterId": 2,
+      "requestedHours": 2,
+      "message": "Quiero aprender inglés"
+    }
+order: 5000

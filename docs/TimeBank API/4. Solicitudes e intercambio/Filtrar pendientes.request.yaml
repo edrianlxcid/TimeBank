@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/servicerequests?status=Pendiente"
+method: GET
+queryParams:
+  status: Pendiente
+order: 2000

@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/reviews"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "serviceRequestId": 1,
+      "reviewerId": 2,
+      "rating": 5,
+      "comment": "Excelente profesora"
+    }
+order: 2000

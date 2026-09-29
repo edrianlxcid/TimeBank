@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/users/1"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "firstName": "Ana María",
+      "lastName": "Pérez",
+      "email": "ana@mail.com",
+      "phone": "0999999999",
+      "isActive": true
+    }
+order: 7000

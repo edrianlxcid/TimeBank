@@ -1,0 +1,13 @@
+$kind: http-request
+name: "Error: completar sin aceptar"
+url: "{{baseUrl}}/servicerequests/1/status"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "status": "Completada"
+    }
+order: 7000

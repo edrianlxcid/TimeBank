@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/reviews?userId=1"
+method: GET
+queryParams:
+  userId: "1"
+order: 1000

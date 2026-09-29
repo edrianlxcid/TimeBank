@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}/servicerequests"
+method: GET
+order: 1000

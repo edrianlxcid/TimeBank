@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/categories/6"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "id": 6,
+      "name": "Idiomas y música",
+      "description": "Clases de idiomas e instrumentos"
+    }
+order: 4000

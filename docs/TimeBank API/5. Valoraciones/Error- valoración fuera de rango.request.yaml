@@ -1,0 +1,15 @@
+$kind: http-request
+name: "Error: valoración fuera de rango"
+url: "{{baseUrl}}/reviews"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "serviceRequestId": 1,
+      "reviewerId": 1,
+      "rating": 9
+    }
+order: 3000

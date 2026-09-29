@@ -1,0 +1,15 @@
+$kind: http-request
+name: "Error: saldo insuficiente"
+url: "{{baseUrl}}/servicerequests"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "serviceId": 1,
+      "requesterId": 2,
+      "requestedHours": 10
+    }
+order: 4000
