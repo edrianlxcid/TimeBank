@@ -1,0 +1,14 @@
+$kind: http-request
+description: Lista los inicios de sesión. Si hay otra sesión activa, guarda su Id en {{sessionId}}.
+url: "{{baseUrl}}/auth/sessions"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Responde 200 OK', () => pm.response.to.have.status(200));
+      const otra = pm.response.json().find(s => s.isActive && !s.isCurrent);
+      if (otra) { pm.collectionVariables.set('sessionId', otra.id); }
+order: 8000

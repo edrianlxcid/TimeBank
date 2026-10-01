@@ -13,6 +13,7 @@ public class TimeBankDbContext : DbContext
     public DbSet<ServiceRequest> ServiceRequests { get; set; }
     public DbSet<TimeTransaction> TimeTransactions { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<UserSession> UserSessions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,6 +55,18 @@ public class TimeBankDbContext : DbContext
         modelBuilder.Entity<Review>()
             .HasOne(r => r.ReviewedUser).WithMany()
             .HasForeignKey(r => r.ReviewedUserId).OnDelete(DeleteBehavior.Restrict);
+
+        // Sesiones de login: un usuario tiene muchas sesiones; si se borra el usuario, se borran sus sesiones
+        modelBuilder.Entity<UserSession>(session =>
+        {
+            session.HasOne(s => s.User).WithMany(u => u.Sessions)
+                .HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
+            session.HasIndex(s => s.TokenId).IsUnique(); // cada token identifica una sola sesión
+            session.Property(s => s.TokenId).HasMaxLength(64);
+            session.Property(s => s.IpAddress).HasMaxLength(64);
+            session.Property(s => s.UserAgent).HasMaxLength(256);
+            session.Ignore(s => s.IsActive); // se calcula, no es una columna
+        });
 
         // Categorías iniciales, para que el SELECT de prueba devuelva datos
         modelBuilder.Entity<Category>().HasData(

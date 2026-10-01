@@ -1,0 +1,23 @@
+$kind: http-request
+description: Devuelve el token JWT y lo guarda en la variable {{token}} para las siguientes peticiones.
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "{{loginEmail}}",
+      "password": "{{loginPassword}}"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Responde 200 OK', () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      pm.test('Devuelve un token JWT', () => pm.expect(body.token.split('.')).to.have.lengthOf(3));
+      // Guarda el token para usarlo en "Authorization: Bearer {{token}}"
+      pm.collectionVariables.set('token', body.token);
+order: 3000

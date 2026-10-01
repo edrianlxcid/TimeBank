@@ -1,0 +1,21 @@
+$kind: http-request
+description: Cambia la contraseña y cierra las sesiones de otros dispositivos. La sesión actual sigue activa.
+url: "{{baseUrl}}/auth/change-password"
+method: PUT
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+body:
+  type: json
+  content: |-
+    {
+      "currentPassword": "{{loginPassword}}",
+      "newPassword": "nueva456"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Responde 200 OK', () => pm.response.to.have.status(200));
+      if (pm.response.code === 200) { pm.collectionVariables.set('loginPassword', 'nueva456'); }
+order: 9000

@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/me"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Responde 200 OK', () => pm.response.to.have.status(200));
+      pm.test('No devuelve la contraseña', () => pm.expect(pm.response.text()).to.not.include('password'));
+order: 5000

@@ -36,3 +36,48 @@ PUT {{api}}/servicerequests/1/status
 Content-Type: application/json
 
 { "status": "Completada" }
+
+# ==================== LOGIN (/api/auth) ====================
+
+### Registrar cuenta
+POST {{api}}/auth/register
+Content-Type: application/json
+
+{ "firstName": "Laura", "lastName": "Torres", "email": "laura.torres@mail.com", "password": "clave123", "phone": "0991112233" }
+
+### Iniciar sesión (guarda el token en la variable "login")
+# @name login
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{ "email": "laura.torres@mail.com", "password": "clave123" }
+
+### Ver mi perfil (necesita token)
+GET {{api}}/auth/me
+Authorization: Bearer {{login.response.body.token}}
+
+### Editar mi perfil
+PUT {{api}}/auth/me
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "firstName": "Laura", "lastName": "Torres Vega", "phone": "0998887766" }
+
+### Ver mis sesiones
+GET {{api}}/auth/sessions
+Authorization: Bearer {{login.response.body.token}}
+
+### Cambiar contraseña
+PUT {{api}}/auth/change-password
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "currentPassword": "clave123", "newPassword": "nueva456" }
+
+### Cerrar otra sesión por su Id
+DELETE {{api}}/auth/sessions/1
+Authorization: Bearer {{login.response.body.token}}
+
+### Cerrar sesión (logout): después el token ya no sirve
+DELETE {{api}}/auth/logout
+Authorization: Bearer {{login.response.body.token}}

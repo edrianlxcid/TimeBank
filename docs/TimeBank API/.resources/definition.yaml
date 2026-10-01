@@ -1,4 +1,8 @@
 $kind: collection
-description: Pruebas del CRUD de TimeBank. Ejecutar en orden, con la API corriendo (dotnet run).
+description: Pruebas del CRUD y del login de TimeBank. Ejecutar en orden, con la API corriendo (dotnet run).
 variables:
   baseUrl: http://localhost:5070/api
+  token: ""
+  loginEmail: laura.torres@mail.com
+  loginPassword: clave123
+  sessionId: ""

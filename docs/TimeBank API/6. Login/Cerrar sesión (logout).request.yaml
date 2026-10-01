@@ -1,0 +1,12 @@
+$kind: http-request
+description: Cierra la sesión actual. Después de esto el token ya no sirve (401).
+url: "{{baseUrl}}/auth/logout"
+method: DELETE
+headers:
+  Authorization: Bearer {{token}}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Responde 204 No Content', () => pm.response.to.have.status(204));
+order: 11000

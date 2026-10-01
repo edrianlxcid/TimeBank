@@ -1,0 +1,5 @@
+$kind: collection
+description: |-
+  Módulo de login (/api/auth). "Iniciar sesión" guarda el token en la variable {{token}}
+  y las demás peticiones lo envían en el header Authorization: Bearer {{token}}.
+order: 6000

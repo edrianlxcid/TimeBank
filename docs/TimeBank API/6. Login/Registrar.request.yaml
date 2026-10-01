@@ -1,0 +1,29 @@
+$kind: http-request
+description: Crea una cuenta nueva con un correo distinto en cada ejecución y lo guarda en {{loginEmail}}.
+url: "{{baseUrl}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "firstName": "Laura",
+      "lastName": "Torres",
+      "email": "{{loginEmail}}",
+      "password": "{{loginPassword}}",
+      "phone": "0991112233"
+    }
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      // Correo nuevo en cada ejecución para no chocar con "correo ya registrado"
+      pm.collectionVariables.set('loginEmail', 'laura' + Date.now() + '@mail.com');
+      pm.collectionVariables.set('loginPassword', 'clave123');
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Responde 201 Created', () => pm.response.to.have.status(201));
+      pm.test('Recibe 2 horas de bienvenida', () => pm.expect(pm.response.json().hoursBalance).to.eql(2));
+order: 1000

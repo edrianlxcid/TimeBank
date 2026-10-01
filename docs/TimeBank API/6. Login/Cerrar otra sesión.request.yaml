@@ -1,0 +1,7 @@
+$kind: http-request
+description: Cierra una sesión propia por su Id (ver "Ver mis sesiones"). Responde 404 si no existe.
+url: "{{baseUrl}}/auth/sessions/{{sessionId}}"
+method: DELETE
+headers:
+  Authorization: Bearer {{token}}
+order: 10000
