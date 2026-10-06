@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TimeBank.API.Models;
+using TimeBank.API.Security;
 
 namespace TimeBank.API.Data;
 
@@ -14,6 +15,8 @@ public class TimeBankDbContext : DbContext
     public DbSet<TimeTransaction> TimeTransactions { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<UserSession> UserSessions { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,6 +69,25 @@ public class TimeBankDbContext : DbContext
             session.Property(s => s.IpAddress).HasMaxLength(64);
             session.Property(s => s.UserAgent).HasMaxLength(256);
             session.Ignore(s => s.IsActive); // se calcula, no es una columna
+        });
+
+        // Roles: nombre único y relación muchos a muchos con usuarios mediante UserRoles
+        modelBuilder.Entity<Role>(role =>
+        {
+            role.HasIndex(r => r.Name).IsUnique();
+            role.Property(r => r.Name).HasMaxLength(50);
+            role.HasData(
+                new Role { Id = 1, Name = AppRoles.Admin, Description = "Administra categorías, usuarios y roles" },
+                new Role { Id = 2, Name = AppRoles.User, Description = "Ofrece y solicita servicios con su saldo de horas" });
+        });
+
+        modelBuilder.Entity<UserRole>(userRole =>
+        {
+            userRole.HasKey(ur => new { ur.UserId, ur.RoleId }); // clave compuesta: un rol una sola vez por usuario
+            userRole.HasOne(ur => ur.User).WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId).OnDelete(DeleteBehavior.Cascade);
+            userRole.HasOne(ur => ur.Role).WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId).OnDelete(DeleteBehavior.Restrict);
         });
 
         // Categorías iniciales, para que el SELECT de prueba devuelva datos

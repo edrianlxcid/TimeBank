@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "admin@timebank.com",
+      "password": "Admin2026*"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Responde 200 OK', () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      pm.test('Tiene el rol Administrador', () => pm.expect(body.user.roles).to.include('Administrador'));
+      pm.collectionVariables.set('adminToken', body.token);
+order: 1000

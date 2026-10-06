@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using TimeBank.API.Security;
 
 namespace TimeBank.API.Dtos;
 
@@ -19,7 +20,7 @@ public class RegisterDto
     public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "La contraseña es obligatoria")]
-    [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
+    [StrongPassword] // mayúscula, minúscula, número, carácter especial y mínimo 8
     public string Password { get; set; } = string.Empty;
 
     [Phone(ErrorMessage = "El teléfono no tiene un formato válido")]
@@ -56,7 +57,7 @@ public class ChangePasswordDto
     public string CurrentPassword { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "La nueva contraseña es obligatoria")]
-    [MinLength(6, ErrorMessage = "La nueva contraseña debe tener al menos 6 caracteres")]
+    [StrongPassword]
     public string NewPassword { get; set; } = string.Empty;
 }
 
@@ -72,7 +73,8 @@ public record UserProfileDto(
     decimal HoursBalance,
     bool IsActive,
     DateTime CreatedAt,
-    DateTime? LastLoginAt);
+    DateTime? LastLoginAt,
+    IReadOnlyList<string> Roles);
 
 // Respuesta del login: el token que el frontend o Postman deben enviar en cada petición protegida
 public record AuthResponseDto(

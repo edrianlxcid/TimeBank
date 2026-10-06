@@ -1,0 +1,6 @@
+$kind: collection
+description: |-
+  Ejecutar primero. Inicia sesión con el Administrador que crea la migración AddRoles
+  (admin@timebank.com / Admin2026*) y guarda su token en {{adminToken}}.
+  Todas las peticiones de las carpetas 1 a 5 envían Authorization: Bearer {{adminToken}}.
+order: 500

@@ -3,6 +3,7 @@ name: "Error: correo repetido"
 url: "{{baseUrl}}/users"
 method: POST
 headers:
+  Authorization: Bearer {{adminToken}}
   Content-Type: application/json
 body:
   type: json
@@ -11,6 +12,6 @@ body:
       "firstName": "Otra",
       "lastName": "Ana",
       "email": "ana@mail.com",
-      "password": "123456"
+      "password": "Clave2026*"
     }
 order: 6000

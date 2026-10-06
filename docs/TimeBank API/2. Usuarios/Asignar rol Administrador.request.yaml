@@ -1,0 +1,14 @@
+$kind: http-request
+description: Solo el Administrador cambia roles. Reemplaza los roles que tenía el usuario.
+url: "{{baseUrl}}/users/2/roles"
+method: PUT
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+body:
+  type: json
+  content: |-
+    {
+      "roles": ["Administrador"]
+    }
+order: 7600

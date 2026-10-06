@@ -20,7 +20,7 @@ scripts:
     code: |-
       // Correo nuevo en cada ejecución para no chocar con "correo ya registrado"
       pm.collectionVariables.set('loginEmail', 'laura' + Date.now() + '@mail.com');
-      pm.collectionVariables.set('loginPassword', 'clave123');
+      pm.collectionVariables.set('loginPassword', 'Clave2026*');
   - type: afterResponse
     language: text/javascript
     code: |-

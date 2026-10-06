@@ -2,6 +2,7 @@ $kind: http-request
 url: "{{baseUrl}}/services"
 method: POST
 headers:
+  Authorization: Bearer {{adminToken}}
   Content-Type: application/json
 body:
   type: json

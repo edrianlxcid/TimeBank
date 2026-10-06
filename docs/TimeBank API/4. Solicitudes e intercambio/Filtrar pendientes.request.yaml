@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/servicerequests?status=Pendiente"
 method: GET
+headers:
+  Authorization: Bearer {{adminToken}}
 queryParams:
   status: Pendiente
 order: 2000

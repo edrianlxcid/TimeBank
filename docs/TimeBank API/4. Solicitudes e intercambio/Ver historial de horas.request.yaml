@@ -1,4 +1,6 @@
 $kind: http-request
 url: "{{baseUrl}}/timetransactions"
 method: GET
+headers:
+  Authorization: Bearer {{adminToken}}
 order: 10000

@@ -17,7 +17,9 @@ public class TokenService : ITokenService
         _settings = settings.Value;
     }
 
-    public (string Token, string TokenId, DateTime ExpiresAt) CreateToken(User user)
+    public const string RoleClaimType = "role";
+
+    public (string Token, string TokenId, DateTime ExpiresAt) CreateToken(User user, IEnumerable<string> roles)
     {
         var tokenId = Guid.NewGuid().ToString("N");
         var expiresAt = DateTime.UtcNow.AddMinutes(_settings.ExpirationMinutes);
@@ -30,6 +32,9 @@ public class TokenService : ITokenService
             new(JwtRegisteredClaimNames.GivenName, user.FirstName),
             new(JwtRegisteredClaimNames.Jti, tokenId) // identificador de la sesión
         };
+
+        // Un claim por cada rol (por ejemplo "Usuario" o "Administrador")
+        claims.AddRange(roles.Select(role => new Claim(RoleClaimType, role)));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Key));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

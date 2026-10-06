@@ -1,38 +1,64 @@
 # Pruebas rápidas de la API TimeBank (se ejecutan desde VS Code con la extensión REST Client)
+# Todo el CRUD pide token: ejecuta primero "Login del Administrador".
 @api = http://localhost:5070/api
+
+### Login del Administrador (lo crea la migración AddRoles)
+# @name admin
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{ "email": "admin@timebank.com", "password": "Admin2026*" }
+
+### Ver roles (solo Administrador)
+GET {{api}}/roles
+Authorization: Bearer {{admin.response.body.token}}
+
+### Cambiar el rol de un usuario (solo Administrador)
+PUT {{api}}/users/2/roles
+Authorization: Bearer {{admin.response.body.token}}
+Content-Type: application/json
+
+{ "roles": ["Administrador"] }
 
 ### Listar categorías
 GET {{api}}/categories
+Authorization: Bearer {{admin.response.body.token}}
 
 ### Crear usuario (recibe 2 horas de bienvenida)
 POST {{api}}/users
+Authorization: Bearer {{admin.response.body.token}}
 Content-Type: application/json
 
-{ "firstName": "Ana", "lastName": "Pérez", "email": "ana@mail.com", "password": "123456" }
+{ "firstName": "Ana", "lastName": "Pérez", "email": "ana@mail.com", "password": "Clave2026*" }
 
 ### Crear servicio
 POST {{api}}/services
+Authorization: Bearer {{admin.response.body.token}}
 Content-Type: application/json
 
 { "userId": 1, "categoryId": 1, "title": "Clases de inglés", "description": "Nivel básico", "estimatedHours": 2 }
 
 ### Buscar servicios por categoría y texto
 GET {{api}}/services?categoryId=1&search=ingles
+Authorization: Bearer {{admin.response.body.token}}
 
 ### Solicitar un servicio
 POST {{api}}/servicerequests
+Authorization: Bearer {{admin.response.body.token}}
 Content-Type: application/json
 
 { "serviceId": 1, "requesterId": 2, "requestedHours": 2, "message": "Quiero aprender" }
 
 ### Aceptar la solicitud
 PUT {{api}}/servicerequests/1/status
+Authorization: Bearer {{admin.response.body.token}}
 Content-Type: application/json
 
 { "status": "Aceptada" }
 
 ### Completar la solicitud (transfiere las horas)
 PUT {{api}}/servicerequests/1/status
+Authorization: Bearer {{admin.response.body.token}}
 Content-Type: application/json
 
 { "status": "Completada" }
@@ -43,14 +69,14 @@ Content-Type: application/json
 POST {{api}}/auth/register
 Content-Type: application/json
 
-{ "firstName": "Laura", "lastName": "Torres", "email": "laura.torres@mail.com", "password": "clave123", "phone": "0991112233" }
+{ "firstName": "Laura", "lastName": "Torres", "email": "laura.torres@mail.com", "password": "Clave2026*", "phone": "0991112233" }
 
 ### Iniciar sesión (guarda el token en la variable "login")
 # @name login
 POST {{api}}/auth/login
 Content-Type: application/json
 
-{ "email": "laura.torres@mail.com", "password": "clave123" }
+{ "email": "laura.torres@mail.com", "password": "Clave2026*" }
 
 ### Ver mi perfil (necesita token)
 GET {{api}}/auth/me
@@ -72,7 +98,7 @@ PUT {{api}}/auth/change-password
 Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
-{ "currentPassword": "clave123", "newPassword": "nueva456" }
+{ "currentPassword": "Clave2026*", "newPassword": "Nueva2026#" }
 
 ### Cerrar otra sesión por su Id
 DELETE {{api}}/auth/sessions/1

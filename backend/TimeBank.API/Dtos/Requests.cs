@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using TimeBank.API.Security;
 
 namespace TimeBank.API.Dtos;
 
@@ -17,10 +18,21 @@ public class CreateUserDto
     public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "La contraseña es obligatoria")]
-    [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
+    [StrongPassword]
     public string Password { get; set; } = string.Empty;
 
     public string? Phone { get; set; }
+
+    // Solo el administrador crea usuarios por aquí y elige sus roles.
+    // Si no se envía, el usuario queda con el rol "Usuario".
+    public List<string>? Roles { get; set; }
+}
+
+public class AssignRolesDto
+{
+    [Required(ErrorMessage = "Debes enviar al menos un rol")]
+    [MinLength(1, ErrorMessage = "Debes enviar al menos un rol")]
+    public List<string> Roles { get; set; } = new();
 }
 
 public class UpdateUserDto

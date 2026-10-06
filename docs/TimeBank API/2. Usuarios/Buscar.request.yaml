@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/users?search=ana"
 method: GET
+headers:
+  Authorization: Bearer {{adminToken}}
 queryParams:
   search: ana
 order: 2000

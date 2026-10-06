@@ -10,7 +10,7 @@ body:
       "firstName": "Laura",
       "lastName": "Torres",
       "email": "{{loginEmail}}",
-      "password": "clave123"
+      "password": "Clave2026*"
     }
 scripts:
   - type: afterResponse

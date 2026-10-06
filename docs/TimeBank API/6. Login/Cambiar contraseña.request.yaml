@@ -10,12 +10,12 @@ body:
   content: |-
     {
       "currentPassword": "{{loginPassword}}",
-      "newPassword": "nueva456"
+      "newPassword": "Nueva2026#"
     }
 scripts:
   - type: afterResponse
     language: text/javascript
     code: |-
       pm.test('Responde 200 OK', () => pm.response.to.have.status(200));
-      if (pm.response.code === 200) { pm.collectionVariables.set('loginPassword', 'nueva456'); }
+      if (pm.response.code === 200) { pm.collectionVariables.set('loginPassword', 'Nueva2026#'); }
 order: 9000

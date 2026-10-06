@@ -46,7 +46,8 @@ public static class AuthenticationExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Key)),
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(30),
-                    NameClaimType = JwtRegisteredClaimNames.Sub
+                    NameClaimType = JwtRegisteredClaimNames.Sub,
+                    RoleClaimType = TokenService.RoleClaimType // así funciona [Authorize(Roles = "Administrador")]
                 };
 
                 options.Events = new JwtBearerEvents
@@ -70,6 +71,12 @@ public static class AuthenticationExtensions
                             ? "La sesión fue cerrada o ya expiró. Vuelve a iniciar sesión"
                             : "Debes iniciar sesión: falta el token o no es válido";
                         await context.Response.WriteAsJsonAsync(new { message });
+                    },
+                    // 403: el token es válido pero el rol no alcanza (por ejemplo, un Usuario en una ruta de Administrador)
+                    OnForbidden = async context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        await context.Response.WriteAsJsonAsync(new { message = "No tienes permiso para realizar esta acción" });
                     }
                 };
             });

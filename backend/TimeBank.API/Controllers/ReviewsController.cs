@@ -6,9 +6,9 @@ using TimeBank.API.Models;
 
 namespace TimeBank.API.Controllers;
 
-[ApiController]
+// Valoraciones: cada usuario valora a su nombre; las borra quien la hizo o el Administrador
 [Route("api/[controller]")] // ruta: /api/reviews
-public class ReviewsController : ControllerBase
+public class ReviewsController : ApiControllerBase
 {
     private readonly TimeBankDbContext _context;
 
@@ -41,6 +41,11 @@ public class ReviewsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Review>> CreateReview(CreateReviewDto dto)
     {
+        if (!CanActAs(dto.ReviewerId))
+        {
+            return Forbidden("Solo puedes valorar a tu nombre");
+        }
+
         var request = await _context.ServiceRequests
             .Include(r => r.Service)
             .FirstOrDefaultAsync(r => r.Id == dto.ServiceRequestId);
@@ -87,6 +92,11 @@ public class ReviewsController : ControllerBase
     {
         var review = await _context.Reviews.FindAsync(id);
         if (review == null) return NotFound(new { message = "Valoración no encontrada" });
+
+        if (!CanActAs(review.ReviewerId))
+        {
+            return Forbidden("Solo puedes eliminar tus propias valoraciones");
+        }
 
         _context.Reviews.Remove(review);
         await _context.SaveChangesAsync();

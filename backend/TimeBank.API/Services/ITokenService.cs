@@ -6,6 +6,7 @@ namespace TimeBank.API.Services;
 // de crear tokens sin tocar la lógica del login.
 public interface ITokenService
 {
-    // Devuelve el token, su identificador (jti) y la fecha en que vence
-    (string Token, string TokenId, DateTime ExpiresAt) CreateToken(User user);
+    // Devuelve el token, su identificador (jti) y la fecha en que vence.
+    // Los roles se guardan dentro del token como claims de tipo "role".
+    (string Token, string TokenId, DateTime ExpiresAt) CreateToken(User user, IEnumerable<string> roles);
 }

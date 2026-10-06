@@ -22,4 +22,7 @@ public class User
 
     [JsonIgnore] // las sesiones se consultan aparte en /api/auth/sessions
     public ICollection<UserSession> Sessions { get; set; } = new List<UserSession>();
+
+    [JsonIgnore] // los roles se devuelven como lista de nombres en /api/auth/me
+    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

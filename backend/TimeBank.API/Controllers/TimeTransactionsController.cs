@@ -7,9 +7,8 @@ namespace TimeBank.API.Controllers;
 
 // Historial de horas: solo lectura, porque las transacciones se crean
 // automáticamente al completar una solicitud
-[ApiController]
 [Route("api/[controller]")] // ruta: /api/timetransactions
-public class TimeTransactionsController : ControllerBase
+public class TimeTransactionsController : ApiControllerBase
 {
     private readonly TimeBankDbContext _context;
 
@@ -22,6 +21,9 @@ public class TimeTransactionsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TimeTransaction>>> GetTransactions([FromQuery] int? userId)
     {
+        // Un usuario normal solo ve sus propios movimientos; el Administrador puede ver los de cualquiera
+        if (!IsAdmin) userId = CurrentUserId;
+
         var query = _context.TimeTransactions.AsQueryable();
         if (userId.HasValue) query = query.Where(t => t.FromUserId == userId || t.ToUserId == userId);
 

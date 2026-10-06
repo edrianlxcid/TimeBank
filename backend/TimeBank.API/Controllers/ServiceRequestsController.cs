@@ -6,9 +6,10 @@ using TimeBank.API.Models;
 
 namespace TimeBank.API.Controllers;
 
-[ApiController]
+// Permisos: pide un servicio el propio usuario; acepta/rechaza quien lo ofrece;
+// marca como completada quien lo pidió (porque es quien paga las horas). El Administrador puede todo.
 [Route("api/[controller]")] // ruta: /api/servicerequests
-public class ServiceRequestsController : ControllerBase
+public class ServiceRequestsController : ApiControllerBase
 {
     // Estados posibles de una solicitud
     private const string StatusPending = "Pendiente";
@@ -62,6 +63,11 @@ public class ServiceRequestsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ServiceRequest>> CreateRequest(CreateServiceRequestDto dto)
     {
+        if (!CanActAs(dto.RequesterId))
+        {
+            return Forbidden("Solo puedes solicitar servicios a tu nombre");
+        }
+
         var service = await _context.Services.FindAsync(dto.ServiceId);
         if (service == null) return BadRequest(new { message = "El servicio especificado no existe" });
         if (!service.IsActive) return BadRequest(new { message = "El servicio no está disponible" });
@@ -106,6 +112,11 @@ public class ServiceRequestsController : ControllerBase
         var request = await _context.ServiceRequests.FindAsync(id);
         if (request == null) return NotFound(new { message = "Solicitud no encontrada" });
 
+        if (!CanActAs(request.RequesterId))
+        {
+            return Forbidden("Solo quien hizo la solicitud puede editarla");
+        }
+
         if (request.Status != StatusPending)
         {
             return BadRequest(new { message = $"Solo se puede editar una solicitud Pendiente (esta está {request.Status})" });
@@ -133,6 +144,16 @@ public class ServiceRequestsController : ControllerBase
             .Include(r => r.Service)
             .FirstOrDefaultAsync(r => r.Id == id);
         if (request == null) return NotFound(new { message = "Solicitud no encontrada" });
+
+        // Permisos según el estado que se quiere poner
+        if ((dto.Status == StatusAccepted || dto.Status == StatusRejected) && !CanActAs(request.Service.UserId))
+        {
+            return Forbidden("Solo quien ofrece el servicio puede aceptar o rechazar la solicitud");
+        }
+        if (dto.Status == StatusCompleted && !CanActAs(request.RequesterId))
+        {
+            return Forbidden("Solo quien pidió el servicio puede marcarlo como completado");
+        }
 
         var allowed = request.Status switch
         {
@@ -191,6 +212,11 @@ public class ServiceRequestsController : ControllerBase
     {
         var request = await _context.ServiceRequests.FindAsync(id);
         if (request == null) return NotFound(new { message = "Solicitud no encontrada" });
+
+        if (!CanActAs(request.RequesterId))
+        {
+            return Forbidden("Solo quien hizo la solicitud puede cancelarla");
+        }
 
         // Regla: solo se puede cancelar mientras está Pendiente
         if (request.Status != StatusPending)

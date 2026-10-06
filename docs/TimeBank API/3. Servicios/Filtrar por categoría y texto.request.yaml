@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/services?categoryId=1&search=ingles"
 method: GET
+headers:
+  Authorization: Bearer {{adminToken}}
 queryParams:
   categoryId: "1"
   search: ingles

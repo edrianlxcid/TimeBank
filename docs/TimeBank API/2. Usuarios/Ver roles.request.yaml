@@ -1,6 +1,6 @@
 $kind: http-request
-url: "{{baseUrl}}/services/1"
+url: "{{baseUrl}}/roles"
 method: GET
 headers:
   Authorization: Bearer {{adminToken}}
-order: 3000
+order: 7500

@@ -3,6 +3,7 @@ name: "Error: saldo insuficiente"
 url: "{{baseUrl}}/servicerequests"
 method: POST
 headers:
+  Authorization: Bearer {{adminToken}}
   Content-Type: application/json
 body:
   type: json

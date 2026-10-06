@@ -3,6 +3,7 @@ name: "Error: completar sin aceptar"
 url: "{{baseUrl}}/servicerequests/1/status"
 method: PUT
 headers:
+  Authorization: Bearer {{adminToken}}
   Content-Type: application/json
 body:
   type: json

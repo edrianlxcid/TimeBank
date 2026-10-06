@@ -6,9 +6,9 @@ using TimeBank.API.Models;
 
 namespace TimeBank.API.Controllers;
 
-[ApiController]
+// Todos con sesión ven los servicios; cada usuario crea, edita o elimina solo los suyos (el Administrador, cualquiera)
 [Route("api/[controller]")] // ruta: /api/services
-public class ServicesController : ControllerBase
+public class ServicesController : ApiControllerBase
 {
     private readonly TimeBankDbContext _context;
 
@@ -62,6 +62,11 @@ public class ServicesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Service>> CreateService(ServiceDto dto)
     {
+        if (!CanActAs(dto.UserId))
+        {
+            return Forbidden("Solo puedes publicar servicios a tu nombre");
+        }
+
         var error = await ValidateAsync(dto);
         if (error != null) return BadRequest(new { message = error });
 
@@ -92,6 +97,11 @@ public class ServicesController : ControllerBase
             return NotFound(new { message = "Servicio no encontrado" });
         }
 
+        if (!CanActAs(service.UserId) || !CanActAs(dto.UserId))
+        {
+            return Forbidden("Solo puedes editar tus propios servicios");
+        }
+
         var error = await ValidateAsync(dto);
         if (error != null) return BadRequest(new { message = error });
 
@@ -114,6 +124,11 @@ public class ServicesController : ControllerBase
         if (service == null)
         {
             return NotFound(new { message = "Servicio no encontrado" });
+        }
+
+        if (!CanActAs(service.UserId))
+        {
+            return Forbidden("Solo puedes eliminar tus propios servicios");
         }
 
         // Regla: si ya tiene solicitudes, se desactiva para no perder el historial

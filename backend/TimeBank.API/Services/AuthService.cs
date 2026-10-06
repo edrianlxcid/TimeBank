@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TimeBank.API.Data;
 using TimeBank.API.Dtos;
 using TimeBank.API.Models;
+using TimeBank.API.Security;
 
 namespace TimeBank.API.Services;
 
@@ -48,6 +49,15 @@ public class AuthService : IAuthService
         };
         user.PasswordHash = _hasher.HashPassword(user, dto.Password);
 
+        // Quien se registra solo puede ser "Usuario". Los administradores los crea otro administrador.
+        var userRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == AppRoles.User);
+        if (userRole == null)
+        {
+            return ServiceResult<UserProfileDto>.Fail(ServiceErrorType.Validation,
+                "No existe el rol Usuario. Ejecuta 'dotnet ef database update'");
+        }
+        user.UserRoles.Add(new UserRole { Role = userRole, AssignedAt = DateTime.UtcNow });
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
@@ -57,7 +67,7 @@ public class AuthService : IAuthService
     public async Task<ServiceResult<AuthResponseDto>> LoginAsync(LoginDto dto, string? ipAddress, string? userAgent)
     {
         var email = NormalizeEmail(dto.Email);
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+        var user = await UsersWithRoles().FirstOrDefaultAsync(u => u.Email.ToLower() == email);
         if (user == null)
         {
             return ServiceResult<AuthResponseDto>.Fail(ServiceErrorType.Unauthorized, InvalidCredentials);
@@ -80,7 +90,8 @@ public class AuthService : IAuthService
             user.PasswordHash = _hasher.HashPassword(user, dto.Password);
         }
 
-        var (token, tokenId, expiresAt) = _tokenService.CreateToken(user);
+        // Los roles viajan dentro del token para que la API sepa qué puede hacer el usuario
+        var (token, tokenId, expiresAt) = _tokenService.CreateToken(user, RoleNames(user));
 
         _context.UserSessions.Add(new UserSession
         {
@@ -99,7 +110,7 @@ public class AuthService : IAuthService
 
     public async Task<ServiceResult<UserProfileDto>> GetProfileAsync(int userId)
     {
-        var user = await _context.Users.FindAsync(userId);
+        var user = await UsersWithRoles().FirstOrDefaultAsync(u => u.Id == userId);
         return user == null
             ? ServiceResult<UserProfileDto>.Fail(ServiceErrorType.NotFound, "Usuario no encontrado")
             : ServiceResult<UserProfileDto>.Ok(ToProfile(user));
@@ -107,7 +118,7 @@ public class AuthService : IAuthService
 
     public async Task<ServiceResult<UserProfileDto>> UpdateProfileAsync(int userId, UpdateProfileDto dto)
     {
-        var user = await _context.Users.FindAsync(userId);
+        var user = await UsersWithRoles().FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
             return ServiceResult<UserProfileDto>.Fail(ServiceErrorType.NotFound, "Usuario no encontrado");
@@ -214,6 +225,14 @@ public class AuthService : IAuthService
     private static string? Truncate(string? value, int max) =>
         value == null || value.Length <= max ? value : value[..max];
 
+    // Usuarios con sus roles cargados (Include = JOIN con UserRoles y Roles)
+    private IQueryable<User> UsersWithRoles() =>
+        _context.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role);
+
+    private static List<string> RoleNames(User u) =>
+        u.UserRoles.Select(ur => ur.Role.Name).OrderBy(n => n).ToList();
+
     private static UserProfileDto ToProfile(User u) =>
-        new(u.Id, u.FirstName, u.LastName, u.Email, u.Phone, u.HoursBalance, u.IsActive, u.CreatedAt, u.LastLoginAt);
+        new(u.Id, u.FirstName, u.LastName, u.Email, u.Phone, u.HoursBalance, u.IsActive, u.CreatedAt, u.LastLoginAt,
+            RoleNames(u));
 }

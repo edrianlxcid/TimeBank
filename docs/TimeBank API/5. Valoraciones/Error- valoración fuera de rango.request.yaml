@@ -3,6 +3,7 @@ name: "Error: valoración fuera de rango"
 url: "{{baseUrl}}/reviews"
 method: POST
 headers:
+  Authorization: Bearer {{adminToken}}
   Content-Type: application/json
 body:
   type: json

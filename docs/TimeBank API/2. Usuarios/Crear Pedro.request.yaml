@@ -2,6 +2,7 @@ $kind: http-request
 url: "{{baseUrl}}/users"
 method: POST
 headers:
+  Authorization: Bearer {{adminToken}}
   Content-Type: application/json
 body:
   type: json
@@ -10,6 +11,6 @@ body:
       "firstName": "Pedro",
       "lastName": "López",
       "email": "pedro@mail.com",
-      "password": "123456"
+      "password": "Clave2026*"
     }
 order: 5000

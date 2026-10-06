@@ -1,13 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TimeBank.API.Data;
 using TimeBank.API.Models;
+using TimeBank.API.Security;
 
 namespace TimeBank.API.Controllers;
 
-[ApiController]
+// Cualquier usuario con sesión ve las categorías; solo el Administrador las crea, edita o elimina
 [Route("api/[controller]")] // ruta: /api/categories
-public class CategoriesController : ControllerBase
+public class CategoriesController : ApiControllerBase
 {
     private readonly TimeBankDbContext _context;
 
@@ -16,7 +18,8 @@ public class CategoriesController : ControllerBase
         _context = context;
     }
 
-    // GET: api/categories
+    // GET: api/categories (público: cualquiera puede ver las categorías, aunque no haya iniciado sesión)
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
     {
@@ -38,6 +41,7 @@ public class CategoriesController : ControllerBase
 
     // POST: api/categories
     [HttpPost]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<ActionResult<Category>> CreateCategory(Category category)
     {
         if (string.IsNullOrWhiteSpace(category.Name))
@@ -60,6 +64,7 @@ public class CategoriesController : ControllerBase
 
     // PUT: api/categories/5
     [HttpPut("{id:int}")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> UpdateCategory(int id, Category category)
     {
         if (id != category.Id)
@@ -87,6 +92,7 @@ public class CategoriesController : ControllerBase
 
     // DELETE: api/categories/5
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> DeleteCategory(int id)
     {
         var category = await _context.Categories.FindAsync(id);
