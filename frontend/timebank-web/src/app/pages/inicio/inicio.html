@@ -1,0 +1,50 @@
+@if (auth.currentUser(); as user) {
+  <section class="page">
+    <header class="welcome">
+      <div>
+        <p class="eyebrow">Bienvenido</p>
+        <h1>Hola, {{ user.firstName }}</h1>
+        <p class="muted">{{ user.email }}</p>
+      </div>
+
+      <div class="balance">
+        <span class="label">Saldo de horas</span>
+        <span class="value">{{ user.hoursBalance | number: '1.0-2' }}<small>h</small></span>
+      </div>
+    </header>
+
+    <div class="cards">
+      <article class="card">
+        <h2>Tu rol</h2>
+        <p class="role-name">{{ user.roles.join(', ') }}</p>
+        @if (auth.isAdmin()) {
+          <p class="muted">Gestionas categorías, usuarios y roles de la plataforma.</p>
+        } @else {
+          <p class="muted">Ofreces y pides servicios pagando con tus horas.</p>
+        }
+      </article>
+
+      <article class="card wide">
+        <h2>Categorías de servicios</h2>
+        @if (loading()) {
+          <p class="muted">Cargando categorías desde TimeBank API...</p>
+        }
+        @if (error()) {
+          <p class="error">{{ error() }}</p>
+        }
+        @if (categories().length > 0) {
+          <ul class="categories">
+            @for (category of categories(); track category.id) {
+              <li>
+                <strong>{{ category.name }}</strong>
+                <span>{{ category.description || 'Sin descripción' }}</span>
+              </li>
+            }
+          </ul>
+        } @else if (!loading() && !error()) {
+          <p class="muted">Todavía no hay categorías registradas.</p>
+        }
+      </article>
+    </div>
+  </section>
+}

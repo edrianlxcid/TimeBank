@@ -1,6 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { UserProfile } from './auth.service';
+
+export interface Category {
+  id: number;
+  name: string;
+  description: string | null;
+}
 
 // Capa de comunicación entre Angular y la API de TimeBank
 @Injectable({ providedIn: 'root' })
@@ -11,8 +18,13 @@ export class TimeBankApiService {
   // URL base de la API (backend ASP.NET Core)
   private readonly apiUrl = 'http://localhost:5070/api';
 
-  // GET /api/categories: lista de categorías
-  getCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/categories`);
+  // GET /api/categories: lista de categorías (pública)
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.apiUrl}/categories`);
+  }
+
+  // GET /api/users: lista de usuarios (solo Administrador; el token lo agrega el interceptor)
+  getUsers(): Observable<UserProfile[]> {
+    return this.http.get<UserProfile[]>(`${this.apiUrl}/users`);
   }
 }

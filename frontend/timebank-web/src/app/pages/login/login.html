@@ -1,0 +1,55 @@
+<div class="login-container">
+  <section class="intro">
+    <p class="brand">Time<span>Bank</span></p>
+    <h1>Intercambia horas,<br>no dinero.</h1>
+    <p class="lead">Ofrece lo que sabes hacer, pide lo que necesitas y paga con tu tiempo.</p>
+    <p class="hours"><strong>1 hora</strong> de ayuda = <strong>1 hora</strong> en tu saldo</p>
+  </section>
+
+  <div class="login-card">
+    <h2>Iniciar sesión</h2>
+    <p class="subtitle">Ingresa a tu cuenta</p>
+
+    <!-- Al enviar el formulario se ejecuta login() del componente -->
+    <form (ngSubmit)="login()" novalidate>
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="correo@ejemplo.com"
+          autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="password-field">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Contraseña"
+            autocomplete="current-password" />
+          <button type="button" class="toggle" (click)="showPassword = !showPassword">
+            {{ showPassword ? 'Ocultar' : 'Ver' }}
+          </button>
+        </div>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="error-message" role="alert">{{ errorMessage() }}</div>
+      }
+
+      <button type="submit" class="submit" [disabled]="loading()">
+        @if (loading()) {
+          Iniciando sesión...
+        } @else {
+          Iniciar sesión
+        }
+      </button>
+    </form>
+  </div>
+</div>

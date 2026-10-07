@@ -1,0 +1,44 @@
+<section class="page">
+  <h1>Usuarios</h1>
+  <p class="muted">Solo el rol Administrador puede ver esta página (GET /api/users).</p>
+
+  @if (loading()) {
+    <p class="muted">Cargando usuarios...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (users().length > 0) {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th class="num">Horas</th>
+            <th>Estado</th>
+            <th>Registro</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td>{{ user.firstName }} {{ user.lastName }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                @for (role of user.roles; track role) {
+                  <span class="role" [class.admin]="role === 'Administrador'">{{ role }}</span>
+                }
+              </td>
+              <td class="num">{{ user.hoursBalance | number: '1.0-2' }}</td>
+              <td>{{ user.isActive ? 'Activo' : 'Inactivo' }}</td>
+              <td>{{ user.createdAt | date: 'dd/MM/yyyy' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

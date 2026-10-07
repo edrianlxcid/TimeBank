@@ -1,35 +1,22 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { TimeBankApiService } from './services/timebank-api.service';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
+// Componente principal: barra superior (solo con sesión) y el contenido de cada ruta
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements OnInit {
-  // Servicio para comunicarnos con el backend
-  private readonly api = inject(TimeBankApiService);
+export class App {
+  protected readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
-  // Datos que se muestran en la plantilla (signals para que la vista se actualice sola)
-  protected readonly categories = signal<any[]>([]);
-  protected readonly error = signal('');
-  protected readonly loading = signal(true);
-
-  // Angular ejecuta este método cuando el componente se inicializa
-  ngOnInit(): void {
-    this.api.getCategories().subscribe({
-      next: (data) => {
-        console.log('Categorías recibidas:', data);
-        this.categories.set(data);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('Error conectando con la API:', err);
-        this.error.set('No se pudo conectar con el backend de TimeBank.');
-        this.loading.set(false);
-      }
+  logout(): void {
+    this.auth.logout().subscribe({
+      complete: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login'])
     });
   }
 }

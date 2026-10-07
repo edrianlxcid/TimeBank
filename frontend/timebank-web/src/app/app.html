@@ -1,25 +1,25 @@
-<div class="container">
-  <h1>TimeBank</h1>
-  <h2>Prueba de conexión con la API</h2>
+@if (auth.currentUser(); as user) {
+  <header class="topbar">
+    <a class="brand" routerLink="/inicio">Time<span>Bank</span></a>
 
-  @if (error()) {
-    <p style="color: red;">{{ error() }}</p>
-  }
-
-  @if (loading()) {
-    <p>Cargando categorías desde TimeBank API...</p>
-  }
-
-  @if (categories().length > 0) {
-    <h3>Categorías encontradas:</h3>
-    <ul>
-      @for (category of categories(); track category.id) {
-        <li><strong>{{ category.name }}</strong> — {{ category.description || 'Sin descripción' }}</li>
+    <nav>
+      <a routerLink="/inicio" routerLinkActive="active">Inicio</a>
+      <!-- El menú cambia según el rol: solo el Administrador ve "Usuarios" -->
+      @if (auth.isAdmin()) {
+        <a routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
       }
-    </ul>
-  } @else if (!loading() && !error()) {
-    <p>La API respondió, pero todavía no hay categorías registradas.</p>
-  }
-</div>
+    </nav>
 
-<router-outlet />
+    <div class="session">
+      <span class="who">{{ user.firstName }} {{ user.lastName }}</span>
+      @for (role of user.roles; track role) {
+        <span class="role" [class.admin]="role === 'Administrador'">{{ role }}</span>
+      }
+      <button type="button" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </header>
+}
+
+<main>
+  <router-outlet />
+</main>

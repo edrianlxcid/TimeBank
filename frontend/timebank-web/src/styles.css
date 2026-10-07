@@ -1,1 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales de TimeBank */
+:root {
+  --tb-ink: #0f2a3d;
+  --tb-teal: #0f766e;
+  --tb-teal-dark: #115e59;
+  --tb-amber: #f5b301;
+  --tb-bg: #f3f6f8;
+  --tb-muted: #64748b;
+  --tb-border: #d6dee5;
+  --tb-error: #b91c1c;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  background: var(--tb-bg);
+  color: var(--tb-ink);
+}
